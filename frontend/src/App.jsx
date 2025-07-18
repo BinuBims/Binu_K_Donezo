@@ -16,6 +16,8 @@ function RedirectToLogin() {
     navigate("/login")
   }, [])
 
+  
+
   return <></>
 }
 

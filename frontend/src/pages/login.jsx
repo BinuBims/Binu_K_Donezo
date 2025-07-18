@@ -41,7 +41,10 @@ export default function Login() {
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">
       <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        <LoginAlert />
+        <LoginAlert 
+        alert={alert}
+        showAlert={showAlert}
+        />
          <LoginForm
           handleSubmit={handleSubmit}
           loginUser={loginUser}
@@ -86,7 +89,7 @@ function LoginForm({ handleSubmit, loginUser, register }) {
   )
 }
 
-function LoginAlert(){
+function LoginAlert({alert,showAlert}){
   return (
     <>
       {
