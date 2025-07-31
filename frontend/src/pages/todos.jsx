@@ -1,12 +1,54 @@
 import { useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
 import getAxiosClient from "../axios-instance";
+
+import { CheckCircle, Trash2 } from "lucide-react"; // optional icons
 
 export default function Todos() {
   const modalRef = useRef();
   const queryClient = useQueryClient();
+
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      name: "",
+      description: ""
+    }
+  });
+
+
+  const { data, isError, isLoading } = useQuery({
+    // A unique key to identify this query in React Query's cache
+    queryKey: ["todos"],
+    // The function responsible for fetching the data
+    queryFn: async () => {
+      const axiosInstance = await getAxiosClient();
+
+      // Use the Axios instance to send a GET request to fetch the list of todos
+      const { data } = await axiosInstance.get("http://localhost:8080/todos");
+      console.log(data)
+
+      // Return the fetched data (React Query will cache it under the queryKey)
+      return data;
+    }
+
+  });
+
+  const { mutate: deleteNewTodo } = useMutation({
+    mutationKey:["deleteTodo"],
+    mutationFn: async (todoId) => {
+      const axiosInstance = await getAxiosClient();
+
+      const { data } = await axiosInstance.delete(`http://localhost:8080/todos/${todoId}`);
+
+      return data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    }
+  });
+
+
   const { mutate: createNewTodo } = useMutation({
     // The key used to identify this mutation in React Query's cache
     mutationKey: ["newTodo"],
@@ -32,6 +74,7 @@ export default function Todos() {
     mutationKey: ["markAsCompleted"],
     mutationFn: async (todoId) => {
       const axiosInstance = await getAxiosClient();
+      console.log(`task id ${todoId}`)
 
       const { data } = await axiosInstance.put(`http://localhost:8080/todos/${todoId}/completed`);
 
@@ -54,21 +97,7 @@ export default function Todos() {
     )
   }
 
-  const { data, isError, isLoading } = useQuery({
-    // A unique key to identify this query in React Query's cache
-    queryKey: ["todos"],
-
-    // The function responsible for fetching the data
-    queryFn: async () => {
-      const axiosInstance = await getAxiosClient();
-
-      // Use the Axios instance to send a GET request to fetch the list of todos
-      const { data } = await axiosInstance.get("http://localhost:8080/todos");
-
-      // Return the fetched data (React Query will cache it under the queryKey)
-      return data;
-    },
-  });
+  console.log(`haha:${data}`)
 
   const toggleNewTodoModal = () => {
     // Check if the modal is currently open by accessing the `open` property of `modalRef`.
@@ -80,12 +109,7 @@ export default function Todos() {
       modalRef.current.showModal();
     }
   }
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      name: "",
-      description: ""
-    }
-  });
+
 
   const handleNewTodo = (values) => {
     createNewTodo(values);
@@ -93,9 +117,11 @@ export default function Todos() {
   }
   function NewToDoButton() {
     return (
-      <button className="btn btn-primary" onClick={toggleNewTodoModal}>
-        New Todo
-      </button>
+      <div className="flex justify-center mt-4">
+        <button className="btn btn-primary" onClick={toggleNewTodoModal}>
+          New Todo
+        </button>
+      </div>
     )
   }
   function TodoModal() {
@@ -140,36 +166,59 @@ export default function Todos() {
     )
   }
 
+
   function TodoItemList() {
     return (
-      <div className="w-lg h-sm flex column items-center justify-center gap-4">
-        {data.success && data.todos.length >= 1 && (
-          <ul className="flex column items-center justify-center gap-4">
-            {
-              data.todos.map(todo => (
-                <li className="inline-flex items-center gap-4">
-                  <div className="w-md">
-                    <h3 className="text-lg">
-                      {todo.name}
-                    </h3>
-                    <p className="text-sm">{todo.description}</p>
+      <div className="w-full max-w-2xl mx-auto p-4">
+        {data?.success && data.todos.length >= 1 && (
+          <ul className="flex flex-col gap-4">
+            {[...data.todos]
+              .sort((a, b) => a.completed - b.completed) // false (0) before true (1)
+              .map((todo) => (
+                <li
+                  key={todo.id}
+                  className="flex items-center justify-between border rounded-xl p-4 shadow-sm hover:shadow-md transition"
+                >
+                  {/* Dot + Task content */}
+                  <div className="flex items-start gap-3">
+                    <div className="text-xl text-red-500">&#128204;</div>
+                    <div>
+                      <h3 className="text-lg font-medium">{todo.name}</h3>
+                      <p className="text-sm text-gray-600">{todo.description}</p>
+                    </div>
                   </div>
-                  <div className="w-md">
-                    <label className="swap">
-                      <input type="checkbox" onClick={() => markAsCompleted(todo.id)} />
-                      <div className="swap-on">
-                        Yes
-                      </div>
-                      <div className="swap-off">
-                        No
-                      </div>
-                    </label>
+
+                  {/* Checkbox + delete button */}
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="checkbox"
+                      className="w-5 h-5 accent-blue-600"
+                      checked={todo.completed}
+                      onChange={() => markAsCompleted(todo.id)}
+                    />
+
+                    {/* Placeholder for delete icon */}
+                    <button
+                      onClick={() => deleteNewTodo(todo.id)}
+                      className="text-gray-400 hover:text-red-500 transition"
+                    >
+                      <Trash2 size={20} />
+                    </button>
                   </div>
                 </li>
-              ))
-            }
+              ))}
           </ul>
-        )}</div>
-    )
+        )}
+      </div>
+    );
   }
+
+
+  return (
+    <>
+      <NewToDoButton />
+      <TodoItemList />
+      <TodoModal />
+    </>
+  )
 }
