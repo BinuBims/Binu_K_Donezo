@@ -6,7 +6,6 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Todos from "./pages/todos";
 import { useEffect } from "react";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 const client = new QueryClient();
 
@@ -26,6 +25,7 @@ function App() {
   return (
     <QueryClientProvider client={client}>
       <BrowserRouter>
+      <MainLayout />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
