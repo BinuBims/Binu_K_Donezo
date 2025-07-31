@@ -9,23 +9,22 @@ import { useEffect } from "react";
 
 const client = new QueryClient();
 
-function RedirectToLogin() {
-  const navigate = useNavigate();
+// function RedirectToLogin() {
+//   const navigate = useNavigate();
 
-  useEffect(() => {
-    navigate("/login")
-  }, [])
+//   useEffect(() => {
+//     navigate("/login")
+//   }, [])
 
 
 
-  return <></>
-}
+//   return <></>
+// }
 
 function App() {
   return (
     <QueryClientProvider client={client}>
       <BrowserRouter>
-      <MainLayout />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
