@@ -1,15 +1,50 @@
-# Donezo Full Stack Application
+# ✅ Donezo – Full Stack To-Do Application  
 
-## Backend
+Donezo is a task management app where users can add tasks, mark them as completed, and delete them when no longer needed.  
+Each user can sign in to securely store their to-do list in the backend, ensuring their data is persistent across sessions.  
 
-The backend is very simple. It connects to Supabase using Prisma (which is allowed and (documented)[https://supabase.com/partners/integrations/prisma] how to do).
-There is no authentication being handled here, only Authorization.
+![Landing Page](images/landingpage.JPG)  
 
-For more information on the backend, please look at the README in the backend folder 
+---
+
+## 🛠 Tech Stack  
+
+- **Frontend:** HTML, CSS, JavaScript, React, Vite, Tailwind CSS  
+- **Backend:** Node.js, Express  
+- **Database & Auth:** Supabase  
+
+---
+
+## ⚡ Running Locally  
 
 
-## Frontend
+### Install dependencies
+`npm install`
 
-The frontend is a React Single Page Application. It connects to Supabase via it's Authentication service and does have a Supabase Client initialized.
+### Start backend
+`cd backend
+node server.js`
 
-For more information on the frontend, please look at the readme in the frontend folder
+### Start frontend
+`cd frontend
+npm run dev`
+
+# 🚀 Optimizations
+
+The app is fully functional — users can sign in, add tasks, and delete them.  
+Future improvements include:
+
+- Adding the ability to edit tasks after they are created  
+- Enabling Google authentication for easier sign-in  
+- Improving the UI/UX to make the app more visually appealing  
+
+---
+
+# 📖 Lessons Learned
+
+- Gained hands-on experience with React and React Router  
+- Implemented protected routes to control visibility for authenticated users  
+- Used JWT tokens to handle secure authentication and authorization  
+- Learned Tailwind CSS for rapid and clean styling  
+
+
