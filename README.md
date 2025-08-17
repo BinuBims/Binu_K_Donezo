@@ -3,7 +3,7 @@
 Donezo is a task management app where users can add tasks, mark them as completed, and delete them when no longer needed.  
 Each user can sign in to securely store their to-do list in the backend, ensuring their data is persistent across sessions.  
 
-![Landing Page](images/landingpage.JPG)  
+![Landing Page](frontend/public/donezo.JPG)  
 
 ---
 
